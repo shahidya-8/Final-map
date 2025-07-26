@@ -62,41 +62,23 @@
         <script src="./layers/layers.js" type="text/javascript"></script> 
         <script src="./resources/Autolinker.min.js"></script>
         <script src="./resources/qgis2web.js"></script>
-        <!-- Feedback Form Toggle Button -->
-<button id="toggleFeedbackBtn" title="Feedback" 
-  style="position: fixed; bottom: 20px; left: 20px; z-index: 9999; 
-  background: #4CAF50; color: white; border: none; border-radius: 50%; 
-  width: 50px; height: 50px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+        <!-- ICON BUTTON TO TOGGLE FORM -->
+<div id="feedback-toggle" onclick="toggleForm()" 
+     style="position: absolute; bottom: 20px; left: 20px; z-index: 9999; cursor: pointer; background-color: #4CAF50; padding: 10px 15px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.2); color: white; font-size: 20px;">
   💬
-</button>
+</div>
 
-<!-- Feedback Form -->
-<div id="feedback-form" 
-  style="display: none; position: fixed; bottom: 100px; left: 20px; z-index: 9998; 
-  max-width: 300px; background: #f2f2f2; padding: 10px; border-radius: 20px; 
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-family: sans-serif;">
+<!-- FEEDBACK FORM SECTION -->
+<div id="feedback-form" style="display: none; position: absolute; bottom: 80px; left: 20px; z-index: 9998; max-width: 400px; background: #f2f2f2; padding: 15px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-family: sans-serif;">
 
- <h3 style="
-    margin-top: 0; 
-    color: #2c3e50; 
-    font-size: 20px; 
-    font-weight: 700; 
-    text-align: center; 
-    text-transform: uppercase; 
-    letter-spacing: 1px;
-    padding-bottom: 4px;
-    border-bottom: 2px solid #4CAF50;
-  ">
-  🗣️ SHAPE THE MAP WITH YOUR VOICES
-</h3>
-
+  <h3 style="margin-top: 0; color: #2c3e50;">📬 Shape the Map with Your Voices</h3>
   <form action="https://formspree.io/f/mqalqggl" method="POST">
 
     <label>Your Name</label><br>
-    <input type="text" name="name" placeholder="Optional" style="width:50%; padding:5px;"><br><br>
+    <input type="text" name="name" placeholder="Optional" style="width:100%;"><br><br>
 
     <label>Age Group</label><br>
-    <select name="age" style="width:50%; padding:5px;">
+    <select name="age" style="width:100%;">
       <option>Under 18</option>
       <option>18–30</option>
       <option>31–50</option>
@@ -113,7 +95,7 @@
     <input type="radio" name="device" value="Not sure"> Not sure<br><br>
 
     <label>Rate the map (1–5)</label><br>
-    <select name="rating" style="width:50%; padding:5px;">
+    <select name="rating" style="width:100%;">
       <option>⭐</option>
       <option>⭐⭐</option>
       <option>⭐⭐⭐</option>
@@ -129,34 +111,39 @@
     <input type="checkbox" name="place" value="Galwila"> 🌿 Galwila<br>
     <input type="checkbox" name="place" value="Thalaimannar"> 🌊 Thalaimannar<br><br>
 
-    <label>Was the information clear?</label><br>
-    <input type="radio" name="information_clear" value="Yes"> Yes
-    <input type="radio" name="information_clear" value="No"> No
-    <input type="radio" name="information_clear" value="Needs More"> Needs more<br><br>
+    <label>Was the info clear?</label><br>
+    <input type="radio" name="info_clear" value="Yes"> Yes
+    <input type="radio" name="info_clear" value="No"> No
+    <input type="radio" name="info_clear" value="Needs More"> Needs more<br><br>
+
+    <label>Did popups/icons help?</label><br>
+    <input type="radio" name="popup_help" value="Yes"> Yes
+    <input type="radio" name="popup_help" value="No"> No
+    <input type="radio" name="popup_help" value="Not sure"> Not sure<br><br>
 
     <label>What should we add next?</label><br>
-    <input type="text" name="add_next" placeholder="e.g., AR, video, stats" style="width:100%; padding:5px;"><br><br>
+    <input type="text" name="add_next" placeholder="e.g., AR, video, stats" style="width:100%;"><br><br>
 
     <label>Any other suggestions?</label><br>
-    <textarea name="comments" rows="3" style="width:100%; padding:5px;"></textarea><br><br>
+    <textarea name="comments" rows="3" style="width:100%;"></textarea><br><br>
 
-    <button type="submit" 
-      style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">
+    <button type="submit" style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">
       ✅ Submit Feedback
     </button>
   </form>
 </div>
 
-<!-- Toggle Script -->
+<!-- TOGGLE SCRIPT -->
 <script>
-  const toggleBtn = document.getElementById("toggleFeedbackBtn");
-  const form = document.getElementById("feedback-form");
-
-  toggleBtn.addEventListener("click", () => {
-    if (form.style.display === "block") {
-      form.style.display = "none";
-    } else {
+  function toggleForm() {
+    const form = document.getElementById("feedback-form");
+    if (form.style.display === "none") {
       form.style.display = "block";
+    } else {
+      form.style.display = "none";
     }
-  });
+  }
 </script>
+
+    </body>
+</html>
