@@ -210,6 +210,30 @@
     }
   }
 </script>
+<!-- HIDDEN TITLE for Feedback -->
+<div id="form-title-hover">📬 SHAPE THE MAP WITH YOUR VOICES</div>
 
+<style>
+  #form-title-hover {
+    position: absolute;
+    bottom: 90px;
+    left: 85px;
+    background-color: rgba(255,255,255,0.95);
+    color: #2c3e50;
+    font-weight: bold;
+    font-family: 'Arial Black', sans-serif;
+    padding: 6px 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  #feedback-toggle:hover + #form-title-hover {
+    opacity: 1;
+  }
+</style>
     </body>
 </html>
