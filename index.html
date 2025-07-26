@@ -62,5 +62,73 @@
         <script src="./layers/layers.js" type="text/javascript"></script> 
         <script src="./resources/Autolinker.min.js"></script>
         <script src="./resources/qgis2web.js"></script>
+        <!-- Feedback Form Section -->
+<div id="feedback-form" style="max-width: 500px; margin: 20px auto; padding: 15px; background: #f2f2f2; border-radius: 10px; font-family: sans-serif; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+  
+  <h2 style="text-align: center; color: #2c3e50;">📬 Your Thoughts Matter!</h2>
+  <p style="text-align: center; font-size: 14px;">Help us improve this eco-sensitive web map</p>
+
+  <form action="https://formspree.io/f/mqalqggl" method="POST">
+
+    <label>Your Name</label><br>
+    <input type="text" name="name" placeholder="Optional" style="width:100%; padding:5px;"><br><br>
+
+    <label>Age Group</label><br>
+    <select name="age" style="width:100%; padding:5px;">
+      <option>Under 18</option>
+      <option>18–30</option>
+      <option>31–50</option>
+      <option>51+</option>
+    </select><br><br>
+
+    <label>Was the map easy to use?</label><br>
+    <input type="radio" name="easy_use" value="Yes"> Yes
+    <input type="radio" name="easy_use" value="No"> No<br><br>
+
+    <label>Did it work well on your device?</label><br>
+    <input type="radio" name="device" value="Yes"> Yes
+    <input type="radio" name="device" value="No"> No
+    <input type="radio" name="device" value="Not sure"> Not sure<br><br>
+
+    <label>Rate the map (1–5)</label><br>
+    <select name="rating" style="width:100%; padding:5px;">
+      <option>⭐</option>
+      <option>⭐⭐</option>
+      <option>⭐⭐⭐</option>
+      <option>⭐⭐⭐⭐</option>
+      <option>⭐⭐⭐⭐⭐</option>
+    </select><br><br>
+
+    <label>Which place did you like most?</label><br>
+    <input type="checkbox" name="place" value="Mangroves"> 🌴 Mangroves<br>
+    <input type="checkbox" name="place" value="Bird Sanctuary"> 🐦 Bird Sanctuary<br>
+    <input type="checkbox" name="place" value="Bar Reef"> 🐠 Bar Reef<br>
+    <input type="checkbox" name="place" value="Wilpattu"> 🐘 Wilpattu<br>
+    <input type="checkbox" name="place" value="Galwila"> 🌿 Galwila<br>
+    <input type="checkbox" name="place" value="Thalaimannar"> 🌊 Thalaimannar<br><br>
+
+    <label>Was the info clear?</label><br>
+    <input type="radio" name="info_clear" value="Yes"> Yes
+    <input type="radio" name="info_clear" value="No"> No
+    <input type="radio" name="info_clear" value="Needs More"> Needs more<br><br>
+
+    <label>Did popups/icons help?</label><br>
+    <input type="radio" name="popup_help" value="Yes"> Yes
+    <input type="radio" name="popup_help" value="No"> No
+    <input type="radio" name="popup_help" value="Not sure"> Not sure<br><br>
+
+    <label>What should we add next?</label><br>
+    <input type="text" name="add_next" placeholder="e.g., AR, video, stats" style="width:100%; padding:5px;"><br><br>
+
+    <label>Any other suggestions?</label><br>
+    <textarea name="comments" rows="3" style="width:100%; padding:5px;"></textarea><br><br>
+
+    <button type="submit" style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">
+      ✅ Submit Feedback
+    </button>
+
+  </form>
+</div>
+
     </body>
 </html>
