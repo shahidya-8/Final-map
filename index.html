@@ -11,10 +11,8 @@
       position: relative;
     }
     #map {
-      background: #e0e0e0; /* placeholder for your map */
+      background: #e0e0e0; 
     }
-
-    /* Map Title styling */
     #map-title {
       position: fixed;
       top: 10px;
@@ -31,8 +29,6 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
       user-select: none;
     }
-
-    /* North Arrow container */
    #north-arrow {
       position: fixed;
       bottom: 10px;
@@ -40,11 +36,10 @@
       z-index: 10001;
       width: 50px;
       height: 50px;
-      pointer-events: none; /* allows clicks through */
+      pointer-events: none;
       user-select: none;
     }
 
-    /* SVG fills and size */
     #north-arrow svg {
       width: 100%;
       height: 100%;
@@ -97,19 +92,16 @@
         <title></title>
     </head>
     <body>
-         <!-- Map Title -->
+         
   <div id="map-title">ECO SENSITIVE AREAS IN PUTTALAM & MANNAR</div>
 
-  <!-- North Arrow SVG -->
   <div id="north-arrow" aria-label="North Arrow" role="img" title="North Arrow">
     <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
       <polygon points="32,4 12,60 32,48 52,60" />
     </svg>
   </div>
 
-  <!-- Map container -->
   <div id="map">
-    <!-- Your map code / scripts will render here -->
   </div>
 
         <div id="map">
@@ -128,13 +120,12 @@
         <script src="./layers/layers.js" type="text/javascript"></script> 
         <script src="./resources/Autolinker.min.js"></script>
         <script src="./resources/qgis2web.js"></script>
-        <!-- ICON BUTTON TO TOGGLE FORM -->
+       
 <div id="feedback-toggle" onclick="toggleForm()" 
      style="position: absolute; bottom: 20px; left: 20px; z-index: 9999; cursor: pointer; background-color: #4CAF50; padding: 10px 15px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.2); color: white; font-size: 20px;">
   💬
 </div>
 
-<!-- FEEDBACK FORM SECTION -->
 <div id="feedback-form" style="display: none; position: absolute; bottom: 80px; left: 20px; z-index: 9998; max-width: 400px; background: #f2f2f2; padding: 15px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-family: sans-serif;">
 
   <h3 style="margin-top: 0; color: #2c3e50;">📬 Shape the Map with Your Voices</h3>
@@ -199,7 +190,6 @@
   </form>
 </div>
 
-<!-- TOGGLE SCRIPT -->
 <script>
   function toggleForm() {
     const form = document.getElementById("feedback-form");
@@ -210,30 +200,5 @@
     }
   }
 </script>
-<!-- HIDDEN TITLE for Feedback -->
-<div id="form-title-hover">💬 SHAPE THE MAP WITH YOUR VOICES</div>
-
-<style>
-  #form-title-hover {
-    position: absolute;
-    bottom: 90px;
-    left: 85px;
-    background-color: rgba(255,255,255,0.95);
-    color: #2c3e50;
-    font-weight: bold;
-    font-family: 'Arial Black', sans-serif;
-    padding: 6px 10px;
-    border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    opacity: 0;
-    transition: opacity 0.4s ease-in-out;
-    z-index: 9999;
-    pointer-events: none;
-  }
-
-  #feedback-toggle:hover + #form-title-hover {
-    opacity: 1;
-  }
-</style>
     </body>
 </html>
