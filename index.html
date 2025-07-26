@@ -4,14 +4,11 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="initial-scale=1, user-scalable=no, maximum-scale=1, width=device-width">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="stylesheet" href="./resources/ol.css">
   <link rel="stylesheet" href="resources/fontawesome-all.min.css">
   <link href="resources/photon-geocoder-autocomplete.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
   <link rel="stylesheet" href="./resources/qgis2web.css">
-
   <title>Eco-sensitive Web Map with Feedback</title>
 
   <style>
@@ -20,46 +17,58 @@
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
     }
 
     #map {
-      flex: 1;
+      height: 100vh;
       width: 100%;
+      position: relative;
     }
 
-    .ol-control > * {
-      background-color: #f8f8f8 !important;
-      color: #444 !important;
-      border-radius: 0;
+    /* Feedback toggle button */
+    #toggleFeedbackBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      z-index: 1001;
     }
 
-    .ol-attribution a, .gcd-gl-input::placeholder, .search-layer-input-search::placeholder {
-      color: #444 !important;
-    }
-
-    .ol-control {
-      background-color: rgba(255,255,255,.4) !important;
-      padding: 2px !important;
-    }
-
+    /* Feedback form container */
     #feedback-form {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 300px;
+      max-height: 85vh;
+      overflow-y: auto;
       background-color: #f9f9f9;
-      padding: 15px 20px;
-      border-top: 2px solid #ccc;
-      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1000;
+      font-size: 13px;
     }
 
     #feedback-form h2 {
-      margin-top: 0;
-      font-size: 18px;
-      margin-bottom: 10px;
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      text-align: center;
     }
 
     #feedback-form label {
+      margin-top: 8px;
       display: block;
-      margin-top: 10px;
     }
 
     #feedback-form input[type="text"],
@@ -67,30 +76,31 @@
     #feedback-form select,
     #feedback-form textarea {
       width: 100%;
-      padding: 8px;
-      margin-top: 5px;
+      padding: 6px;
+      margin-top: 3px;
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
     }
 
-    #feedback-form .option-group {
+    .option-group {
       margin-top: 5px;
     }
 
-    #feedback-form .option-group label {
+    .option-group label {
       display: inline-block;
-      margin-right: 15px;
+      margin-right: 10px;
     }
 
     #feedback-form button {
-      margin-top: 12px;
-      padding: 10px 16px;
+      margin-top: 10px;
+      padding: 8px 12px;
       background-color: #4CAF50;
       border: none;
       border-radius: 4px;
       color: white;
       cursor: pointer;
+      width: 100%;
     }
 
     #feedback-form button:hover {
@@ -109,12 +119,14 @@
     </div>
   </div>
 
+  <!-- Toggle Button -->
+  <button id="toggleFeedbackBtn" title="Feedback">💬</button>
+
   <!-- Feedback Form -->
   <div id="feedback-form">
-    <h2>📍 Feedback Form</h2>
+    <h2>📍 Feedback</h2>
     <form action="https://formspree.io/f/mqalqggl" method="POST">
 
-      <!-- About You -->
       <label>Your Name (optional):</label>
       <input type="text" name="name">
 
@@ -126,7 +138,6 @@
         <label><input type="radio" name="age" value="51+"> 51+</label>
       </div>
 
-      <!-- Map Experience -->
       <label>Was the map easy to use?</label>
       <div class="option-group">
         <label><input type="radio" name="easy" value="Yes"> 👍 Yes</label>
@@ -150,7 +161,6 @@
         <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
       </select>
 
-      <!-- Content -->
       <label>Which place did you like most?</label>
       <div class="option-group">
         <label><input type="checkbox" name="favorite" value="Mangroves"> 🌴 Mangroves</label>
@@ -168,23 +178,32 @@
         <label><input type="radio" name="clarity" value="Needs more"> 💬 Needs more</label>
       </div>
 
-      <label>Did the icons and popups help you understand better?</label>
+      <label>Did the icons and popups help?</label>
       <div class="option-group">
         <label><input type="radio" name="icons" value="Yes"> 👍 Yes</label>
         <label><input type="radio" name="icons" value="No"> 👎 No</label>
         <label><input type="radio" name="icons" value="Not sure"> 🤔 Not sure</label>
       </div>
 
-      <!-- Suggestions -->
       <label>What should we add next?</label>
       <input type="text" name="suggestions" placeholder="e.g., videos, AR, more maps">
 
-      <label>Any other ideas or comments?</label>
-      <textarea name="comments" rows="3" placeholder="Write your feedback here..."></textarea>
+      <label>Any other comments?</label>
+      <textarea name="comments" rows="2" placeholder="Write your feedback..."></textarea>
 
-      <button type="submit">Submit Feedback</button>
+      <button type="submit">Submit</button>
     </form>
   </div>
+
+  <!-- Toggle Logic -->
+  <script>
+    const toggleBtn = document.getElementById("toggleFeedbackBtn");
+    const form = document.getElementById("feedback-form");
+
+    toggleBtn.addEventListener("click", () => {
+      form.style.display = form.style.display === "block" ? "none" : "block";
+    });
+  </script>
 
   <!-- Scripts -->
   <script src="resources/qgis2web_expressions.js"></script>
@@ -215,6 +234,957 @@
   <script src="./layers/layers.js" type="text/javascript"></script>
   <script src="./resources/Autolinker.min.js"></script>
   <script src="./resources/qgis2web.js"></script>
+</body>
+</html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="initial-scale=1, user-scalable=no, maximum-scale=1, width=device-width">
+  <link rel="stylesheet" href="./resources/ol.css">
+  <link rel="stylesheet" href="resources/fontawesome-all.min.css">
+  <link href="resources/photon-geocoder-autocomplete.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
+  <link rel="stylesheet" href="./resources/qgis2web.css">
+  <title>Eco-sensitive Web Map with Feedback</title>
 
+  <style>
+    html, body {
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    #map {
+      height: 100vh;
+      width: 100%;
+      position: relative;
+    }
+
+    /* Feedback toggle button */
+    #toggleFeedbackBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      z-index: 1001;
+    }
+
+    /* Feedback form container */
+    #feedback-form {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 300px;
+      max-height: 85vh;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1000;
+      font-size: 13px;
+    }
+
+    #feedback-form h2 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    #feedback-form label {
+      margin-top: 8px;
+      display: block;
+    }
+
+    #feedback-form input[type="text"],
+    #feedback-form input[type="email"],
+    #feedback-form select,
+    #feedback-form textarea {
+      width: 100%;
+      padding: 6px;
+      margin-top: 3px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .option-group {
+      margin-top: 5px;
+    }
+
+    .option-group label {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    #feedback-form button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    #feedback-form button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Map -->
+  <div id="map">
+    <div id="popup" class="ol-popup">
+      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+      <div id="popup-content"></div>
+    </div>
+  </div>
+
+  <!-- Toggle Button -->
+  <button id="toggleFeedbackBtn" title="Feedback">💬</button>
+
+  <!-- Feedback Form -->
+  <div id="feedback-form">
+    <h2>📍 Feedback</h2>
+    <form action="https://formspree.io/f/mqalqggl" method="POST">
+
+      <label>Your Name (optional):</label>
+      <input type="text" name="name">
+
+      <label>How old are you?</label>
+      <div class="option-group">
+        <label><input type="radio" name="age" value="Under 18"> Under 18</label>
+        <label><input type="radio" name="age" value="18–30"> 18–30</label>
+        <label><input type="radio" name="age" value="31–50"> 31–50</label>
+        <label><input type="radio" name="age" value="51+"> 51+</label>
+      </div>
+
+      <label>Was the map easy to use?</label>
+      <div class="option-group">
+        <label><input type="radio" name="easy" value="Yes"> 👍 Yes</label>
+        <label><input type="radio" name="easy" value="No"> 👎 No</label>
+      </div>
+
+      <label>Did it work well on your device?</label>
+      <div class="option-group">
+        <label><input type="radio" name="device" value="Yes"> ✅ Yes</label>
+        <label><input type="radio" name="device" value="No"> ❌ No</label>
+        <label><input type="radio" name="device" value="Not sure"> 🤷 Not sure</label>
+      </div>
+
+      <label>How would you rate the map?</label>
+      <select name="rating">
+        <option value="">Select</option>
+        <option value="⭐">⭐</option>
+        <option value="⭐⭐">⭐⭐</option>
+        <option value="⭐⭐⭐">⭐⭐⭐</option>
+        <option value="⭐⭐⭐⭐">⭐⭐⭐⭐</option>
+        <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
+      </select>
+
+      <label>Which place did you like most?</label>
+      <div class="option-group">
+        <label><input type="checkbox" name="favorite" value="Mangroves"> 🌴 Mangroves</label>
+        <label><input type="checkbox" name="favorite" value="Bird Sanctuary"> 🐦 Bird Sanctuary</label>
+        <label><input type="checkbox" name="favorite" value="Bar Reef"> 🐠 Bar Reef</label>
+        <label><input type="checkbox" name="favorite" value="Wilpattu"> 🐘 Wilpattu</label>
+        <label><input type="checkbox" name="favorite" value="Thalaimannar"> 🌊 Thalaimannar</label>
+        <label><input type="checkbox" name="favorite" value="Galwila"> 🌿 Galwila Park</label>
+      </div>
+
+      <label>Was the info clear?</label>
+      <div class="option-group">
+        <label><input type="radio" name="clarity" value="Yes"> ✅ Yes</label>
+        <label><input type="radio" name="clarity" value="No"> ❌ No</label>
+        <label><input type="radio" name="clarity" value="Needs more"> 💬 Needs more</label>
+      </div>
+
+      <label>Did the icons and popups help?</label>
+      <div class="option-group">
+        <label><input type="radio" name="icons" value="Yes"> 👍 Yes</label>
+        <label><input type="radio" name="icons" value="No"> 👎 No</label>
+        <label><input type="radio" name="icons" value="Not sure"> 🤔 Not sure</label>
+      </div>
+
+      <label>What should we add next?</label>
+      <input type="text" name="suggestions" placeholder="e.g., videos, AR, more maps">
+
+      <label>Any other comments?</label>
+      <textarea name="comments" rows="2" placeholder="Write your feedback..."></textarea>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <!-- Toggle Logic -->
+  <script>
+    const toggleBtn = document.getElementById("toggleFeedbackBtn");
+    const form = document.getElementById("feedback-form");
+
+    toggleBtn.addEventListener("click", () => {
+      form.style.display = form.style.display === "block" ? "none" : "block";
+    });
+  </script>
+
+  <!-- Scripts -->
+  <script src="resources/qgis2web_expressions.js"></script>
+  <script src="./resources/functions.js"></script>
+  <script src="./resources/ol.js"></script>
+  <script src="./resources/ol-layerswitcher.js"></script>
+  <script src="resources/photon-geocoder-autocomplete.min.js"></script>
+
+  <!-- Layers -->
+  <script src="layers/studyarewa_1.js"></script>
+  <script src="layers/Wilpattu_2.js"></script>
+  <script src="layers/Vankalai_3.js"></script>
+  <script src="layers/Thalaimannar_4.js"></script>
+  <script src="layers/Barreefsanctuary_5.js"></script>
+  <script src="layers/mangrovesstudyarea_6.js"></script>
+  <script src="layers/Ecosensitiveareas_7.js"></script>
+  <script src="layers/Mangroves_8.js"></script>
+
+  <script src="styles/studyarewa_1_style.js"></script>
+  <script src="styles/Wilpattu_2_style.js"></script>
+  <script src="styles/Vankalai_3_style.js"></script>
+  <script src="styles/Thalaimannar_4_style.js"></script>
+  <script src="styles/Barreefsanctuary_5_style.js"></script>
+  <script src="styles/mangrovesstudyarea_6_style.js"></script>
+  <script src="styles/Ecosensitiveareas_7_style.js"></script>
+  <script src="styles/Mangroves_8_style.js"></script>
+
+  <script src="./layers/layers.js" type="text/javascript"></script>
+  <script src="./resources/Autolinker.min.js"></script>
+  <script src="./resources/qgis2web.js"></script>
+</body>
+</html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="initial-scale=1, user-scalable=no, maximum-scale=1, width=device-width">
+  <link rel="stylesheet" href="./resources/ol.css">
+  <link rel="stylesheet" href="resources/fontawesome-all.min.css">
+  <link href="resources/photon-geocoder-autocomplete.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
+  <link rel="stylesheet" href="./resources/qgis2web.css">
+  <title>Eco-sensitive Web Map with Feedback</title>
+
+  <style>
+    html, body {
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    #map {
+      height: 100vh;
+      width: 100%;
+      position: relative;
+    }
+
+    /* Feedback toggle button */
+    #toggleFeedbackBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      z-index: 1001;
+    }
+
+    /* Feedback form container */
+    #feedback-form {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 300px;
+      max-height: 85vh;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1000;
+      font-size: 13px;
+    }
+
+    #feedback-form h2 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    #feedback-form label {
+      margin-top: 8px;
+      display: block;
+    }
+
+    #feedback-form input[type="text"],
+    #feedback-form input[type="email"],
+    #feedback-form select,
+    #feedback-form textarea {
+      width: 100%;
+      padding: 6px;
+      margin-top: 3px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .option-group {
+      margin-top: 5px;
+    }
+
+    .option-group label {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    #feedback-form button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    #feedback-form button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Map -->
+  <div id="map">
+    <div id="popup" class="ol-popup">
+      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+      <div id="popup-content"></div>
+    </div>
+  </div>
+
+  <!-- Toggle Button -->
+  <button id="toggleFeedbackBtn" title="Feedback">💬</button>
+
+  <!-- Feedback Form -->
+  <div id="feedback-form">
+    <h2>📍 Feedback</h2>
+    <form action="https://formspree.io/f/mqalqggl" method="POST">
+
+      <label>Your Name (optional):</label>
+      <input type="text" name="name">
+
+      <label>How old are you?</label>
+      <div class="option-group">
+        <label><input type="radio" name="age" value="Under 18"> Under 18</label>
+        <label><input type="radio" name="age" value="18–30"> 18–30</label>
+        <label><input type="radio" name="age" value="31–50"> 31–50</label>
+        <label><input type="radio" name="age" value="51+"> 51+</label>
+      </div>
+
+      <label>Was the map easy to use?</label>
+      <div class="option-group">
+        <label><input type="radio" name="easy" value="Yes"> 👍 Yes</label>
+        <label><input type="radio" name="easy" value="No"> 👎 No</label>
+      </div>
+
+      <label>Did it work well on your device?</label>
+      <div class="option-group">
+        <label><input type="radio" name="device" value="Yes"> ✅ Yes</label>
+        <label><input type="radio" name="device" value="No"> ❌ No</label>
+        <label><input type="radio" name="device" value="Not sure"> 🤷 Not sure</label>
+      </div>
+
+      <label>How would you rate the map?</label>
+      <select name="rating">
+        <option value="">Select</option>
+        <option value="⭐">⭐</option>
+        <option value="⭐⭐">⭐⭐</option>
+        <option value="⭐⭐⭐">⭐⭐⭐</option>
+        <option value="⭐⭐⭐⭐">⭐⭐⭐⭐</option>
+        <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
+      </select>
+
+      <label>Which place did you like most?</label>
+      <div class="option-group">
+        <label><input type="checkbox" name="favorite" value="Mangroves"> 🌴 Mangroves</label>
+        <label><input type="checkbox" name="favorite" value="Bird Sanctuary"> 🐦 Bird Sanctuary</label>
+        <label><input type="checkbox" name="favorite" value="Bar Reef"> 🐠 Bar Reef</label>
+        <label><input type="checkbox" name="favorite" value="Wilpattu"> 🐘 Wilpattu</label>
+        <label><input type="checkbox" name="favorite" value="Thalaimannar"> 🌊 Thalaimannar</label>
+        <label><input type="checkbox" name="favorite" value="Galwila"> 🌿 Galwila Park</label>
+      </div>
+
+      <label>Was the info clear?</label>
+      <div class="option-group">
+        <label><input type="radio" name="clarity" value="Yes"> ✅ Yes</label>
+        <label><input type="radio" name="clarity" value="No"> ❌ No</label>
+        <label><input type="radio" name="clarity" value="Needs more"> 💬 Needs more</label>
+      </div>
+
+      <label>Did the icons and popups help?</label>
+      <div class="option-group">
+        <label><input type="radio" name="icons" value="Yes"> 👍 Yes</label>
+        <label><input type="radio" name="icons" value="No"> 👎 No</label>
+        <label><input type="radio" name="icons" value="Not sure"> 🤔 Not sure</label>
+      </div>
+
+      <label>What should we add next?</label>
+      <input type="text" name="suggestions" placeholder="e.g., videos, AR, more maps">
+
+      <label>Any other comments?</label>
+      <textarea name="comments" rows="2" placeholder="Write your feedback..."></textarea>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <!-- Toggle Logic -->
+  <script>
+    const toggleBtn = document.getElementById("toggleFeedbackBtn");
+    const form = document.getElementById("feedback-form");
+
+    toggleBtn.addEventListener("click", () => {
+      form.style.display = form.style.display === "block" ? "none" : "block";
+    });
+  </script>
+
+  <!-- Scripts -->
+  <script src="resources/qgis2web_expressions.js"></script>
+  <script src="./resources/functions.js"></script>
+  <script src="./resources/ol.js"></script>
+  <script src="./resources/ol-layerswitcher.js"></script>
+  <script src="resources/photon-geocoder-autocomplete.min.js"></script>
+
+  <!-- Layers -->
+  <script src="layers/studyarewa_1.js"></script>
+  <script src="layers/Wilpattu_2.js"></script>
+  <script src="layers/Vankalai_3.js"></script>
+  <script src="layers/Thalaimannar_4.js"></script>
+  <script src="layers/Barreefsanctuary_5.js"></script>
+  <script src="layers/mangrovesstudyarea_6.js"></script>
+  <script src="layers/Ecosensitiveareas_7.js"></script>
+  <script src="layers/Mangroves_8.js"></script>
+
+  <script src="styles/studyarewa_1_style.js"></script>
+  <script src="styles/Wilpattu_2_style.js"></script>
+  <script src="styles/Vankalai_3_style.js"></script>
+  <script src="styles/Thalaimannar_4_style.js"></script>
+  <script src="styles/Barreefsanctuary_5_style.js"></script>
+  <script src="styles/mangrovesstudyarea_6_style.js"></script>
+  <script src="styles/Ecosensitiveareas_7_style.js"></script>
+  <script src="styles/Mangroves_8_style.js"></script>
+
+  <script src="./layers/layers.js" type="text/javascript"></script>
+  <script src="./resources/Autolinker.min.js"></script>
+  <script src="./resources/qgis2web.js"></script>
+</body>
+</html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="initial-scale=1, user-scalable=no, maximum-scale=1, width=device-width">
+  <link rel="stylesheet" href="./resources/ol.css">
+  <link rel="stylesheet" href="resources/fontawesome-all.min.css">
+  <link href="resources/photon-geocoder-autocomplete.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
+  <link rel="stylesheet" href="./resources/qgis2web.css">
+  <title>Eco-sensitive Web Map with Feedback</title>
+
+  <style>
+    html, body {
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    #map {
+      height: 100vh;
+      width: 100%;
+      position: relative;
+    }
+
+    /* Feedback toggle button */
+    #toggleFeedbackBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      z-index: 1001;
+    }
+
+    /* Feedback form container */
+    #feedback-form {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 300px;
+      max-height: 85vh;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1000;
+      font-size: 13px;
+    }
+
+    #feedback-form h2 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    #feedback-form label {
+      margin-top: 8px;
+      display: block;
+    }
+
+    #feedback-form input[type="text"],
+    #feedback-form input[type="email"],
+    #feedback-form select,
+    #feedback-form textarea {
+      width: 100%;
+      padding: 6px;
+      margin-top: 3px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .option-group {
+      margin-top: 5px;
+    }
+
+    .option-group label {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    #feedback-form button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    #feedback-form button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Map -->
+  <div id="map">
+    <div id="popup" class="ol-popup">
+      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+      <div id="popup-content"></div>
+    </div>
+  </div>
+
+  <!-- Toggle Button -->
+  <button id="toggleFeedbackBtn" title="Feedback">💬</button>
+
+  <!-- Feedback Form -->
+  <div id="feedback-form">
+    <h2>📍 Feedback</h2>
+    <form action="https://formspree.io/f/mqalqggl" method="POST">
+
+      <label>Your Name (optional):</label>
+      <input type="text" name="name">
+
+      <label>How old are you?</label>
+      <div class="option-group">
+        <label><input type="radio" name="age" value="Under 18"> Under 18</label>
+        <label><input type="radio" name="age" value="18–30"> 18–30</label>
+        <label><input type="radio" name="age" value="31–50"> 31–50</label>
+        <label><input type="radio" name="age" value="51+"> 51+</label>
+      </div>
+
+      <label>Was the map easy to use?</label>
+      <div class="option-group">
+        <label><input type="radio" name="easy" value="Yes"> 👍 Yes</label>
+        <label><input type="radio" name="easy" value="No"> 👎 No</label>
+      </div>
+
+      <label>Did it work well on your device?</label>
+      <div class="option-group">
+        <label><input type="radio" name="device" value="Yes"> ✅ Yes</label>
+        <label><input type="radio" name="device" value="No"> ❌ No</label>
+        <label><input type="radio" name="device" value="Not sure"> 🤷 Not sure</label>
+      </div>
+
+      <label>How would you rate the map?</label>
+      <select name="rating">
+        <option value="">Select</option>
+        <option value="⭐">⭐</option>
+        <option value="⭐⭐">⭐⭐</option>
+        <option value="⭐⭐⭐">⭐⭐⭐</option>
+        <option value="⭐⭐⭐⭐">⭐⭐⭐⭐</option>
+        <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
+      </select>
+
+      <label>Which place did you like most?</label>
+      <div class="option-group">
+        <label><input type="checkbox" name="favorite" value="Mangroves"> 🌴 Mangroves</label>
+        <label><input type="checkbox" name="favorite" value="Bird Sanctuary"> 🐦 Bird Sanctuary</label>
+        <label><input type="checkbox" name="favorite" value="Bar Reef"> 🐠 Bar Reef</label>
+        <label><input type="checkbox" name="favorite" value="Wilpattu"> 🐘 Wilpattu</label>
+        <label><input type="checkbox" name="favorite" value="Thalaimannar"> 🌊 Thalaimannar</label>
+        <label><input type="checkbox" name="favorite" value="Galwila"> 🌿 Galwila Park</label>
+      </div>
+
+      <label>Was the info clear?</label>
+      <div class="option-group">
+        <label><input type="radio" name="clarity" value="Yes"> ✅ Yes</label>
+        <label><input type="radio" name="clarity" value="No"> ❌ No</label>
+        <label><input type="radio" name="clarity" value="Needs more"> 💬 Needs more</label>
+      </div>
+
+      <label>Did the icons and popups help?</label>
+      <div class="option-group">
+        <label><input type="radio" name="icons" value="Yes"> 👍 Yes</label>
+        <label><input type="radio" name="icons" value="No"> 👎 No</label>
+        <label><input type="radio" name="icons" value="Not sure"> 🤔 Not sure</label>
+      </div>
+
+      <label>What should we add next?</label>
+      <input type="text" name="suggestions" placeholder="e.g., videos, AR, more maps">
+
+      <label>Any other comments?</label>
+      <textarea name="comments" rows="2" placeholder="Write your feedback..."></textarea>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <!-- Toggle Logic -->
+  <script>
+    const toggleBtn = document.getElementById("toggleFeedbackBtn");
+    const form = document.getElementById("feedback-form");
+
+    toggleBtn.addEventListener("click", () => {
+      form.style.display = form.style.display === "block" ? "none" : "block";
+    });
+  </script>
+
+  <!-- Scripts -->
+  <script src="resources/qgis2web_expressions.js"></script>
+  <script src="./resources/functions.js"></script>
+  <script src="./resources/ol.js"></script>
+  <script src="./resources/ol-layerswitcher.js"></script>
+  <script src="resources/photon-geocoder-autocomplete.min.js"></script>
+
+  <!-- Layers -->
+  <script src="layers/studyarewa_1.js"></script>
+  <script src="layers/Wilpattu_2.js"></script>
+  <script src="layers/Vankalai_3.js"></script>
+  <script src="layers/Thalaimannar_4.js"></script>
+  <script src="layers/Barreefsanctuary_5.js"></script>
+  <script src="layers/mangrovesstudyarea_6.js"></script>
+  <script src="layers/Ecosensitiveareas_7.js"></script>
+  <script src="layers/Mangroves_8.js"></script>
+
+  <script src="styles/studyarewa_1_style.js"></script>
+  <script src="styles/Wilpattu_2_style.js"></script>
+  <script src="styles/Vankalai_3_style.js"></script>
+  <script src="styles/Thalaimannar_4_style.js"></script>
+  <script src="styles/Barreefsanctuary_5_style.js"></script>
+  <script src="styles/mangrovesstudyarea_6_style.js"></script>
+  <script src="styles/Ecosensitiveareas_7_style.js"></script>
+  <script src="styles/Mangroves_8_style.js"></script>
+
+  <script src="./layers/layers.js" type="text/javascript"></script>
+  <script src="./resources/Autolinker.min.js"></script>
+  <script src="./resources/qgis2web.js"></script>
+</body>
+</html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="initial-scale=1, user-scalable=no, maximum-scale=1, width=device-width">
+  <link rel="stylesheet" href="./resources/ol.css">
+  <link rel="stylesheet" href="resources/fontawesome-all.min.css">
+  <link href="resources/photon-geocoder-autocomplete.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
+  <link rel="stylesheet" href="./resources/qgis2web.css">
+  <title>Eco-sensitive Web Map with Feedback</title>
+
+  <style>
+    html, body {
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    #map {
+      height: 100vh;
+      width: 100%;
+      position: relative;
+    }
+
+    /* Feedback toggle button */
+    #toggleFeedbackBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      z-index: 1001;
+    }
+
+    /* Feedback form container */
+    #feedback-form {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 300px;
+      max-height: 85vh;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1000;
+      font-size: 13px;
+    }
+
+    #feedback-form h2 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    #feedback-form label {
+      margin-top: 8px;
+      display: block;
+    }
+
+    #feedback-form input[type="text"],
+    #feedback-form input[type="email"],
+    #feedback-form select,
+    #feedback-form textarea {
+      width: 100%;
+      padding: 6px;
+      margin-top: 3px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .option-group {
+      margin-top: 5px;
+    }
+
+    .option-group label {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    #feedback-form button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    #feedback-form button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Map -->
+  <div id="map">
+    <div id="popup" class="ol-popup">
+      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+      <div id="popup-content"></div>
+    </div>
+  </div>
+
+  <!-- Toggle Button -->
+  <button id="toggleFeedbackBtn" title="Feedback">💬</button>
+
+  <!-- Feedback Form -->
+  <div id="feedback-form">
+    <h2>📍 Feedback</h2>
+    <form action="https://formspree.io/f/mqalqggl" method="POST">
+
+      <label>Your Name (optional):</label>
+      <input type="text" name="name">
+
+      <label>How old are you?</label>
+      <div class="option-group">
+        <label><input type="radio" name="age" value="Under 18"> Under 18</label>
+        <label><input type="radio" name="age" value="18–30"> 18–30</label>
+        <label><input type="radio" name="age" value="31–50"> 31–50</label>
+        <label><input type="radio" name="age" value="51+"> 51+</label>
+      </div>
+
+      <label>Was the map easy to use?</label>
+      <div class="option-group">
+        <label><input type="radio" name="easy" value="Yes"> 👍 Yes</label>
+        <label><input type="radio" name="easy" value="No"> 👎 No</label>
+      </div>
+
+      <label>Did it work well on your device?</label>
+      <div class="option-group">
+        <label><input type="radio" name="device" value="Yes"> ✅ Yes</label>
+        <label><input type="radio" name="device" value="No"> ❌ No</label>
+        <label><input type="radio" name="device" value="Not sure"> 🤷 Not sure</label>
+      </div>
+
+      <label>How would you rate the map?</label>
+      <select name="rating">
+        <option value="">Select</option>
+        <option value="⭐">⭐</option>
+        <option value="⭐⭐">⭐⭐</option>
+        <option value="⭐⭐⭐">⭐⭐⭐</option>
+        <option value="⭐⭐⭐⭐">⭐⭐⭐⭐</option>
+        <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
+      </select>
+
+      <label>Which place did you like most?</label>
+      <div class="option-group">
+        <label><input type="checkbox" name="favorite" value="Mangroves"> 🌴 Mangroves</label>
+        <label><input type="checkbox" name="favorite" value="Bird Sanctuary"> 🐦 Bird Sanctuary</label>
+        <label><input type="checkbox" name="favorite" value="Bar Reef"> 🐠 Bar Reef</label>
+        <label><input type="checkbox" name="favorite" value="Wilpattu"> 🐘 Wilpattu</label>
+        <label><input type="checkbox" name="favorite" value="Thalaimannar"> 🌊 Thalaimannar</label>
+        <label><input type="checkbox" name="favorite" value="Galwila"> 🌿 Galwila Park</label>
+      </div>
+
+      <label>Was the info clear?</label>
+      <div class="option-group">
+        <label><input type="radio" name="clarity" value="Yes"> ✅ Yes</label>
+        <label><input type="radio" name="clarity" value="No"> ❌ No</label>
+        <label><input type="radio" name="clarity" value="Needs more"> 💬 Needs more</label>
+      </div>
+
+      <label>Did the icons and popups help?</label>
+      <div class="option-group">
+        <label><input type="radio" name="icons" value="Yes"> 👍 Yes</label>
+        <label><input type="radio" name="icons" value="No"> 👎 No</label>
+        <label><input type="radio" name="icons" value="Not sure"> 🤔 Not sure</label>
+      </div>
+
+      <label>What should we add next?</label>
+      <input type="text" name="suggestions" placeholder="e.g., videos, AR, more maps">
+
+      <label>Any other comments?</label>
+      <textarea name="comments" rows="2" placeholder="Write your feedback..."></textarea>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <!-- Toggle Logic -->
+  <script>
+    const toggleBtn = document.getElementById("toggleFeedbackBtn");
+    const form = document.getElementById("feedback-form");
+
+    toggleBtn.addEventListener("click", () => {
+      form.style.display = form.style.display === "block" ? "none" : "block";
+    });
+  </script>
+
+  <!-- Scripts -->
+  <script src="resources/qgis2web_expressions.js"></script>
+  <script src="./resources/functions.js"></script>
+  <script src="./resources/ol.js"></script>
+  <script src="./resources/ol-layerswitcher.js"></script>
+  <script src="resources/photon-geocoder-autocomplete.min.js"></script>
+
+  <!-- Layers -->
+  <script src="layers/studyarewa_1.js"></script>
+  <script src="layers/Wilpattu_2.js"></script>
+  <script src="layers/Vankalai_3.js"></script>
+  <script src="layers/Thalaimannar_4.js"></script>
+  <script src="layers/Barreefsanctuary_5.js"></script>
+  <script src="layers/mangrovesstudyarea_6.js"></script>
+  <script src="layers/Ecosensitiveareas_7.js"></script>
+  <script src="layers/Mangroves_8.js"></script>
+
+  <script src="styles/studyarewa_1_style.js"></script>
+  <script src="styles/Wilpattu_2_style.js"></script>
+  <script src="styles/Vankalai_3_style.js"></script>
+  <script src="styles/Thalaimannar_4_style.js"></script>
+  <script src="styles/Barreefsanctuary_5_style.js"></script>
+  <script src="styles/mangrovesstudyarea_6_style.js"></script>
+  <script src="styles/Ecosensitiveareas_7_style.js"></script>
+  <script src="styles/Mangroves_8_style.js"></script>
+
+  <script src="./layers/layers.js" type="text/javascript"></script>
+  <script src="./resources/Autolinker.min.js"></script>
+  <script src="./resources/qgis2web.js"></script>
 </body>
 </html>
