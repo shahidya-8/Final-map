@@ -73,14 +73,14 @@
 <!-- Feedback Form -->
 <div id="feedback-form" 
   style="display: none; position: fixed; bottom: 100px; left: 20px; z-index: 9998; 
-  max-width: 300px; background: #f2f2f2; padding: 8px 12px; border-radius: 20px; 
+  max-width: 300px; background: #f2f2f2; padding: 10px; border-radius: 20px; 
   box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-family: sans-serif;">
 
-  <h3 style="
+ <h3 style="
     margin-top: 0; 
     color: #2c3e50; 
     font-size: 20px; 
-    font-weight: 700;  /* bold */
+    font-weight: 700; 
     text-align: center; 
     text-transform: uppercase; 
     letter-spacing: 1px;
@@ -88,40 +88,40 @@
     border-bottom: 2px solid #4CAF50;
   ">
   🗣️ SHAPE THE MAP WITH YOUR VOICES
-  </h3>
+</h3>
 
-  <form action="https://formspree.io/f/mqalqggl" method="POST" style="margin:0;">
+  <form action="https://formspree.io/f/mqalqggl" method="POST">
 
-    <label style="margin-bottom:4px; display:block;">Your Name</label>
-    <input type="text" name="name" placeholder="Optional" style="width:50%; padding:4px; margin-bottom:10px;"><br>
+    <label>Your Name</label><br>
+    <input type="text" name="name" placeholder="Optional" style="width:50%; padding:5px;"><br><br>
 
-    <label style="margin-bottom:4px; display:block;">Age Group</label>
-    <select name="age" style="width:50%; padding:4px; margin-bottom:10px;">
+    <label>Age Group</label><br>
+    <select name="age" style="width:50%; padding:5px;">
       <option>Under 18</option>
       <option>18–30</option>
       <option>31–50</option>
       <option>51+</option>
-    </select><br>
+    </select><br><br>
 
-    <label style="margin-bottom:4px; display:block;">Was the map easy to use?</label>
+    <label>Was the map easy to use?</label><br>
     <input type="radio" name="easy_use" value="Yes"> Yes
-    <input type="radio" name="easy_use" value="No" style="margin-left:8px;"> No<br><br>
+    <input type="radio" name="easy_use" value="No"> No<br><br>
 
-    <label style="margin-bottom:4px; display:block;">Did it work well on your device?</label>
+    <label>Did it work well on your device?</label><br>
     <input type="radio" name="device" value="Yes"> Yes
-    <input type="radio" name="device" value="No" style="margin-left:8px;"> No
-    <input type="radio" name="device" value="Not sure" style="margin-left:8px;"> Not sure<br><br>
+    <input type="radio" name="device" value="No"> No
+    <input type="radio" name="device" value="Not sure"> Not sure<br><br>
 
-    <label style="margin-bottom:4px; display:block;">Rate the map (1–5)</label>
-    <select name="rating" style="width:50%; padding:4px; margin-bottom:10px;">
+    <label>Rate the map (1–5)</label><br>
+    <select name="rating" style="width:50%; padding:5px;">
       <option>⭐</option>
       <option>⭐⭐</option>
       <option>⭐⭐⭐</option>
       <option>⭐⭐⭐⭐</option>
       <option>⭐⭐⭐⭐⭐</option>
-    </select><br>
+    </select><br><br>
 
-    <label style="margin-bottom:4px; display:block;">Which place did you like most?</label><br>
+    <label>Which place did you like most?</label><br>
     <input type="checkbox" name="place" value="Mangroves"> 🌴 Mangroves<br>
     <input type="checkbox" name="place" value="Bird Sanctuary"> 🐦 Bird Sanctuary<br>
     <input type="checkbox" name="place" value="Bar Reef"> 🐠 Bar Reef<br>
@@ -129,25 +129,34 @@
     <input type="checkbox" name="place" value="Galwila"> 🌿 Galwila<br>
     <input type="checkbox" name="place" value="Thalaimannar"> 🌊 Thalaimannar<br><br>
 
-    <label style="margin-bottom:4px; display:block;">Was the information clear?</label>
+    <label>Was the information clear?</label><br>
     <input type="radio" name="information_clear" value="Yes"> Yes
-    <input type="radio" name="information_clear" value="No" style="margin-left:8px;"> No
-    <input type="radio" name="information_clear" value="Needs More" style="margin-left:8px;"> Needs more<br><br>
+    <input type="radio" name="information_clear" value="No"> No
+    <input type="radio" name="information_clear" value="Needs More"> Needs more<br><br>
 
-    <label style="margin-bottom:4px; display:block;">What should we add next?</label>
-    <input type="text" name="add_next" placeholder="e.g., AR, video, stats" style="width:100%; padding:4px; margin-bottom:10px;"><br>
+    <label>What should we add next?</label><br>
+    <input type="text" name="add_next" placeholder="e.g., AR, video, stats" style="width:100%; padding:5px;"><br><br>
 
-    <label style="margin-bottom:4px; display:block;">Any other suggestions?</label>
-    <textarea name="comments" rows="3" style="width:100%; padding:4px; margin-bottom:10px;"></textarea><br>
+    <label>Any other suggestions?</label><br>
+    <textarea name="comments" rows="3" style="width:100%; padding:5px;"></textarea><br><br>
 
     <button type="submit" 
-      style="padding: 6px 12px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-weight: 700;">
+      style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">
       ✅ Submit Feedback
     </button>
   </form>
 </div>
 
+<!-- Toggle Script -->
+<script>
+  const toggleBtn = document.getElementById("toggleFeedbackBtn");
+  const form = document.getElementById("feedback-form");
 
-
-    </body>
-</html>
+  toggleBtn.addEventListener("click", () => {
+    if (form.style.display === "block") {
+      form.style.display = "none";
+    } else {
+      form.style.display = "block";
+    }
+  });
+</script>
