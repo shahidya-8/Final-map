@@ -126,10 +126,25 @@
   💬
 </div>
 
-<div id="feedback-form" style="display: none; position: absolute; bottom: 80px; left: 20px; z-index: 9998; max-width: 400px; background: #f2f2f2; padding: 15px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-family: sans-serif;">
+<div id="feedback-form" style="
+  display: none; 
+  position: absolute; 
+  bottom: 80px; 
+  left: 20px; 
+  z-index: 9998; 
+  width: 320px;
+  max-height: 400px; 
+  overflow-y: auto; 
+  background: #f2f2f2; 
+  padding: 15px; 
+  border-radius: 10px; 
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3); 
+  font-family: sans-serif;
+">
 
-  <h3 style="margin-top: 0; color: #2c3e50;">📬 Shape the Map with Your Voices</h3>
-  <form action="https://formspree.io/f/mqalqggl" method="POST">
+  <h3 style="margin-top: 0; color: #2c3e50;">📬 SHAPE THE MAP WITH YOUR VOICES</h3>
+
+  <form action="https://formspree.io/f/mqalqggl" method="POST" style="font-size: 14px;">
 
     <label>Your Name</label><br>
     <input type="text" name="name" placeholder="Optional" style="width:100%;"><br><br>
@@ -142,53 +157,46 @@
       <option>51+</option>
     </select><br><br>
 
-    <label>Was the map easy to use?</label><br>
+    <label>Easy to use?</label><br>
     <input type="radio" name="easy_use" value="Yes"> Yes
     <input type="radio" name="easy_use" value="No"> No<br><br>
 
-    <label>Did it work well on your device?</label><br>
+    <label>Device friendly?</label><br>
     <input type="radio" name="device" value="Yes"> Yes
-    <input type="radio" name="device" value="No"> No
-    <input type="radio" name="device" value="Not sure"> Not sure<br><br>
+    <input type="radio" name="device" value="No"> No<br><br>
 
-    <label>Rate the map (1–5)</label><br>
+    <label>Rate (1–5)</label><br>
     <select name="rating" style="width:100%;">
-      <option>⭐</option>
-      <option>⭐⭐</option>
-      <option>⭐⭐⭐</option>
-      <option>⭐⭐⭐⭐</option>
-      <option>⭐⭐⭐⭐⭐</option>
+      <option>⭐</option><option>⭐⭐</option><option>⭐⭐⭐</option>
+      <option>⭐⭐⭐⭐</option><option>⭐⭐⭐⭐⭐</option>
     </select><br><br>
 
-    <label>Which place did you like most?</label><br>
+    <label>Favorite place?</label><br>
     <input type="checkbox" name="place" value="Mangroves"> 🌴 Mangroves<br>
     <input type="checkbox" name="place" value="Bird Sanctuary"> 🐦 Bird Sanctuary<br>
     <input type="checkbox" name="place" value="Bar Reef"> 🐠 Bar Reef<br>
-    <input type="checkbox" name="place" value="Wilpattu"> 🐘 Wilpattu<br>
-    <input type="checkbox" name="place" value="Galwila"> 🌿 Galwila<br>
-    <input type="checkbox" name="place" value="Thalaimannar"> 🌊 Thalaimannar<br><br>
+    <input type="checkbox" name="place" value="Wilpattu"> 🐘 Wilpattu<br><br>
 
-    <label>Was the info clear?</label><br>
+    <label>Info clear?</label><br>
     <input type="radio" name="info_clear" value="Yes"> Yes
-    <input type="radio" name="info_clear" value="No"> No
-    <input type="radio" name="info_clear" value="Needs More"> Needs more<br><br>
+    <input type="radio" name="info_clear" value="No"> No<br><br>
 
-    <label>Did popups/icons help?</label><br>
+    <label>Popup helpful?</label><br>
     <input type="radio" name="popup_help" value="Yes"> Yes
-    <input type="radio" name="popup_help" value="No"> No
-    <input type="radio" name="popup_help" value="Not sure"> Not sure<br><br>
+    <input type="radio" name="popup_help" value="No"> No<br><br>
 
-    <label>What should we add next?</label><br>
-    <input type="text" name="add_next" placeholder="e.g., AR, video, stats" style="width:100%;"><br><br>
+    <label>What to add?</label><br>
+    <input type="text" name="add_next" placeholder="e.g., stats, AR" style="width:100%;"><br><br>
 
-    <label>Any other suggestions?</label><br>
-    <textarea name="comments" rows="3" style="width:100%;"></textarea><br><br>
+    <label>Suggestions</label><br>
+    <textarea name="comments" rows="2" style="width:100%;"></textarea><br><br>
 
-    <button type="submit" style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">
-      ✅ Submit Feedback
+    <button type="submit" style="padding: 6px 12px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">
+      ✅ Submit
     </button>
   </form>
 </div>
+
 
 <script>
   function toggleForm() {
