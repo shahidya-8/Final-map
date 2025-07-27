@@ -8,12 +8,8 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="./resources/ol.css">
-  <link rel="stylesheet" href="resources/fontawesome-all.min.css">
-  <link rel="stylesheet" href="resources/photon-geocoder-autocomplete.min.css">
-  <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
-  <link rel="stylesheet" href="./resources/qgis2web.css">
+  <!-- Leaflet Stylesheet for Layer Toggle -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
   <style>
     html, body, #map {
@@ -23,25 +19,6 @@
       padding: 0;
       background-color: #ffffff;
     }
-    .ol-control > * {
-      background-color: #f8f8f8!important;
-      color: #444444!important;
-      border-radius: 0px;
-    }
-    .ol-attribution a, .gcd-gl-input::placeholder, .search-layer-input-search::placeholder {
-      color: #444444!important;
-    }
-    .search-layer-input-search {
-      background-color: #f8f8f8!important;
-    }
-    .ol-control > *:focus, .ol-control >*:hover {
-      background-color: rgba(248, 248, 248, 0.7)!important;
-    } 
-    .ol-control {
-      background-color: rgba(255,255,255,.4) !important;
-      padding: 2px !important;
-    } 
-
     #map-title {
       position: fixed;
       top: 10px;
@@ -56,9 +33,7 @@
       font-weight: bold;
       color: #2c3e50;
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-      user-select: none;
     }
-
     #north-arrow {
       position: fixed;
       bottom: 10px;
@@ -66,17 +41,25 @@
       z-index: 10001;
       width: 50px;
       height: 50px;
-      pointer-events: none;
-      user-select: none;
     }
     #north-arrow svg {
       width: 100%;
       height: 100%;
       fill: #2c3e50;
-      filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3));
     }
-
-    /* Feedback title hover pop-up */
+    #feedback-toggle {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 9999;
+      cursor: pointer;
+      background-color: #4CAF50;
+      padding: 10px 15px;
+      border-radius: 50%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      color: white;
+      font-size: 20px;
+    }
     #form-title-tooltip {
       display: none;
       position: absolute;
@@ -89,38 +72,46 @@
       font-size: 13px;
       z-index: 9999;
     }
+    #feedback-form {
+      display: none;
+      position: absolute;
+      bottom: 80px;
+      left: 20px;
+      z-index: 9998;
+      width: 320px;
+      max-height: 400px;
+      overflow-y: auto;
+      background: #f2f2f2;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      font-family: sans-serif;
+    }
   </style>
 </head>
 <body>
-
   <div id="map-title">ECO SENSITIVE AREAS IN PUTTALAM & MANNAR</div>
 
-  <div id="north-arrow" aria-label="North Arrow" role="img" title="North Arrow">
-    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+  <div id="north-arrow">
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
       <polygon points="32,4 12,60 32,48 52,60" />
     </svg>
   </div>
 
-  <div id="map">
-    <div id="popup" class="ol-popup">
-      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-      <div id="popup-content"></div>
-    </div>
-  </div>
+  <div id="map"></div>
 
   <div id="feedback-toggle" 
     onmouseover="document.getElementById('form-title-tooltip').style.display='block'" 
     onmouseout="document.getElementById('form-title-tooltip').style.display='none'" 
-    onclick="toggleForm()" 
-    style="position: absolute; bottom: 20px; left: 20px; z-index: 9999; cursor: pointer; background-color: #4CAF50; padding: 10px 15px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.2); color: white; font-size: 20px;">
+    onclick="toggleForm()">
     💬
   </div>
 
   <div id="form-title-tooltip">SHAPE THE MAP WITH YOUR VOICES</div>
 
-  <div id="feedback-form" style="display: none; position: absolute; bottom: 80px; left: 20px; z-index: 9998; width: 320px; max-height: 400px; overflow-y: auto; background: #f2f2f2; padding: 15px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-family: sans-serif;">
+  <div id="feedback-form">
     <h3 style="margin-top: 0; color: #2c3e50;">📬 SHAPE THE MAP WITH YOUR VOICES</h3>
-    <form action="https://formspree.io/f/mqalqggl" method="POST" style="font-size: 14px;">
+    <form action="https://formspree.io/f/mqalqggl" method="POST">
       <label>Your Name</label><br>
       <input type="text" name="name" placeholder="Optional" style="width:100%;"><br><br>
 
@@ -132,8 +123,8 @@
         <option>51+</option>
       </select><br><br>
 
-      <label for="email">Your Email (optional):</label><br>
-      <input type="email" name="email" id="email" placeholder="example@mail.com" style="width: 100%; padding: 8px;" /><br><br>
+      <label>Your Email (optional):</label><br>
+      <input type="email" name="email" placeholder="example@mail.com" style="width:100%;"><br><br>
 
       <label>Easy to use?</label><br>
       <input type="radio" name="easy_use" value="Yes"> Yes
@@ -177,41 +168,41 @@
     </form>
   </div>
 
-  <!-- Scripts -->
-  <script src="resources/qgis2web_expressions.js"></script>
-  <script src="./resources/functions.js"></script>
-  <script src="./resources/ol.js"></script>
-  <script src="./resources/ol-layerswitcher.js"></script>
-  <script src="resources/photon-geocoder-autocomplete.min.js"></script>
-
-  <script src="layers/studyarewa_1.js"></script>
-  <script src="layers/Wilpattu_2.js"></script>
-  <script src="layers/Vankalai_3.js"></script>
-  <script src="layers/Thalaimannar_4.js"></script>
-  <script src="layers/Barreefsanctuary_5.js"></script>
-  <script src="layers/mangrovesstudyarea_6.js"></script>
-  <script src="layers/Ecosensitiveareas_7.js"></script>
-  <script src="layers/Mangroves_8.js"></script>
-
-  <script src="styles/studyarewa_1_style.js"></script>
-  <script src="styles/Wilpattu_2_style.js"></script>
-  <script src="styles/Vankalai_3_style.js"></script>
-  <script src="styles/Thalaimannar_4_style.js"></script>
-  <script src="styles/Barreefsanctuary_5_style.js"></script>
-  <script src="styles/mangrovesstudyarea_6_style.js"></script>
-  <script src="styles/Ecosensitiveareas_7_style.js"></script>
-  <script src="styles/Mangroves_8_style.js"></script>
-
-  <script src="./layers/layers.js"></script>
-  <script src="./resources/Autolinker.min.js"></script>
-  <script src="./resources/qgis2web.js"></script>
-
+  <!-- Leaflet Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     function toggleForm() {
       const form = document.getElementById("feedback-form");
       form.style.display = form.style.display === "none" ? "block" : "none";
     }
+
+    var map = L.map('map').setView([8.6, 79.9], 8);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Define dummy layers (replace these with real GeoJSON layers)
+    var mangroves = L.layerGroup().addTo(map);
+    var birdSanctuary = L.layerGroup().addTo(map);
+    var barReef = L.layerGroup().addTo(map);
+    var wilpattu = L.layerGroup().addTo(map);
+    var galwila = L.layerGroup().addTo(map);
+    var thalaimannar = L.layerGroup().addTo(map);
+
+    var overlayMaps = {
+      "🌴 Mangroves": mangroves,
+      "🐦 Bird Sanctuary": birdSanctuary,
+      "🐠 Bar Reef": barReef,
+      "🐘 Wilpattu": wilpattu,
+      "🌿 Galwila": galwila,
+      "🌊 Thalaimannar": thalaimannar
+    };
+
+    L.control.layers(null, overlayMaps, {
+      collapsed: false,
+      position: 'topright'
+    }).addTo(map);
   </script>
 </body>
 </html>
-
